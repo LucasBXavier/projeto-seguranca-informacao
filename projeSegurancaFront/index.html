@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Segurança</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Tela de Login -->
+    <div id="loginScreen" class="screen active">
+        <div class="container">
+            <div class="card">
+                <h1>Login</h1>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email:</label>
+                        <input type="email" id="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Senha:</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Entrar</button>
+                </form>
+                <p class="link-text">Não tem conta? <a href="#" onclick="switchScreen('registerScreen')">Cadastre-se</a></p>
+                <div id="loginError" class="error-message"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tela de Cadastro -->
+    <div id="registerScreen" class="screen">
+        <div class="container">
+            <div class="card">
+                <h1>Cadastro</h1>
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="registerName">Nome:</label>
+                        <input type="text" id="registerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email:</label>
+                        <input type="email" id="registerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Senha:</label>
+                        <input type="password" id="registerPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Cadastrar</button>
+                </form>
+                <p class="link-text">Já tem conta? <a href="#" onclick="switchScreen('loginScreen')">Entre</a></p>
+                <div id="registerError" class="error-message"></div>
+                <div id="registerSuccess" class="success-message"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tela de Dashboard -->
+    <div id="dashboardScreen" class="screen">
+        <div class="header">
+            <h1>Bem-vindo</h1>
+            <button class="btn btn-logout" onclick="logout()">Sair</button>
+        </div>
+        <div class="container">
+            <div class="card">
+                <h2>Informações do Perfil</h2>
+                <div class="user-info">
+                    <p><strong>Username:</strong> <span id="userUsername">-</span></p>
+                    <p><strong>Nome:</strong> <span id="userName">-</span></p>
+                    <p><strong>Email:</strong> <span id="userEmail">-</span></p>
+                    <p><strong>Criado em:</strong> <span id="userCreatedAt">-</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
