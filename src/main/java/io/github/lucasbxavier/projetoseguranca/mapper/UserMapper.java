@@ -5,6 +5,8 @@ import io.github.lucasbxavier.projetoseguranca.dto.UserResponseDTO;
 import io.github.lucasbxavier.projetoseguranca.entities.User;
 import org.springframework.stereotype.Component;
 
+import java.time.ZoneId;
+
 @Component
 public class UserMapper {
 
@@ -25,7 +27,10 @@ public class UserMapper {
         dto.setUsername(entity.getUsername());
         dto.setEmail(entity.getEmail());
         dto.setName(entity.getName());
-        dto.setCreatedAt(entity.getCreatedAt());
-
+        dto.setCreatedAt(
+                entity.getCreatedAt()
+                        .atZoneSameInstant(ZoneId.of("America/Sao_Paulo"))
+                        .toLocalDateTime()
+        );
         return dto;
     }}

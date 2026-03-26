@@ -3,7 +3,8 @@ package io.github.lucasbxavier.projetoseguranca.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.UUID;
 
 @Data
@@ -24,10 +25,9 @@ public class User {
     private String name;
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
+    private OffsetDateTime createdAt;
     @PrePersist
     public void onCreate() {
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = OffsetDateTime.now(ZoneOffset.UTC);
     }
 }
