@@ -35,8 +35,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/login/criarUsuario").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/login/buscarUser/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/login/buscarUser/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/login/buscarUser/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/login/buscarUser/**").authenticated()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/swagger-ui.html").permitAll()
                         .requestMatchers("/proj-seguranca/swagger-ui/**").permitAll()
