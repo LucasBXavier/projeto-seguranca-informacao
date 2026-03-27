@@ -30,7 +30,7 @@ public class UserMapper {
         dto.setCreatedAt(
                 entity.getCreatedAt()
                         .atZoneSameInstant(ZoneId.of("America/Sao_Paulo"))
-                        .toLocalDateTime()
+                        .toOffsetDateTime()
         );
         return dto;
     }}

@@ -56,6 +56,19 @@
         </div>
     </div>
 
+    <!-- Tela de Bem-vindo -->
+    <div id="welcomeScreen" class="screen">
+        <div class="container">
+            <div class="card welcome-card">
+                <h1>Bem-vindo!</h1>
+                <p id="welcomeEmail" style="margin-bottom: 30px; color: #666;"></p>
+                <button class="btn btn-primary" onclick="loadUserInfoAndShowDashboard()">Carregar Minhas Informações</button>
+                <button class="btn btn-logout" onclick="logout()" style="margin-top: 15px;">Sair</button>
+                <div id="welcomeError" class="error-message"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Tela de Dashboard -->
     <div id="dashboardScreen" class="screen">
         <div class="header">

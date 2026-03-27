@@ -1,14 +1,15 @@
 // Configurações
-const API_BASE_URL = 'http://localhost:8080/login';
+const apiHost = window.location.hostname || 'localhost';
+const API_BASE_URL = `http://${apiHost}:8080/login`;
 let userEmail = localStorage.getItem('userEmail');
 
 // Verificar se o usuário está autenticado ao carregar a página
 document.addEventListener('DOMContentLoaded', () => {
     const savedEmail = localStorage.getItem('userEmail');
     if (savedEmail) {
-        // Ir direto para o dashboard sem verificar primeira (a sessão deve estar ativa)
-        switchScreen('dashboardScreen');
-        loadUserInfo(savedEmail);
+        // Ir para a tela de bem-vindo
+        switchScreen('welcomeScreen');
+        document.getElementById('welcomeEmail').textContent = `Email: ${savedEmail}`;
     }
 });
 
@@ -80,9 +81,9 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
             userEmail = email;
             localStorage.setItem('userEmail', email);
 
-            // Carregar informações do usuário e ir para dashboard
-            await loadUserInfo(email);
-            switchScreen('dashboardScreen');
+            // Ir para a tela de bem-vindo e deixar o usuário acionar a busca autenticada
+            switchScreen('welcomeScreen');
+            document.getElementById('welcomeEmail').textContent = `Email: ${email}`;
 
             // Limpar formulário
             document.getElementById('loginForm').reset();
@@ -139,16 +140,19 @@ document.getElementById('registerForm')?.addEventListener('submit', async (e) =>
     }
 });
 
-// Carregar informações do usuário
-async function loadUserInfo(email) {
-    try {
-        const emailToUse = email || userEmail || localStorage.getItem('userEmail');
-        
-        if (!emailToUse) {
-            console.warn('Email não fornecido');
-            return;
-        }
+// Carregar informações do usuário e ir para o dashboard
+async function loadUserInfoAndShowDashboard() {
+    const emailToUse = userEmail || localStorage.getItem('userEmail');
+    const btn = document.querySelector('#welcomeScreen .btn-primary');
+    const originalText = btn ? btn.textContent : 'Carregar Minhas Informações';
+    
+    if (!emailToUse) {
+        showError('welcome', 'Email não encontrado. Faça login novamente.');
+        return;
+    }
 
+    try {
+        
         const response = await fetch(`${API_BASE_URL}/buscarUser/${emailToUse}`, {
             method: 'POST',
             headers: {
@@ -164,35 +168,42 @@ async function loadUserInfo(email) {
             document.getElementById('userUsername').textContent = data.username || 'N/A';
             document.getElementById('userName').textContent = data.name || 'N/A';
             document.getElementById('userEmail').textContent = data.email || 'N/A';
-            
-            // Formatar data se existir
+            // Backend já retorna no formato brasileiro; só converte se vier ISO
             if (data.createdAt) {
-                const date = new Date(data.createdAt);
-                document.getElementById('userCreatedAt').textContent = date.toLocaleString('pt-BR');
+                const parsedDate = new Date(data.createdAt);
+                document.getElementById('userCreatedAt').textContent = Number.isNaN(parsedDate.getTime())
+                    ? data.createdAt
+                    : parsedDate.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
             } else {
                 document.getElementById('userCreatedAt').textContent = 'N/A';
             }
+
+            // Ir para o dashboard
+            switchScreen('dashboardScreen');
         } else if (response.status === 401 || response.status === 403) {
-            // Sessão expirou ou não autorizado
-            console.warn(`Erro ${response.status}: Sessão pode ter expirado`);
-            // Mostrar informações locais como fallback
-            document.getElementById('userEmail').textContent = emailToUse;
-            document.getElementById('userUsername').textContent = 'N/A';
-            document.getElementById('userName').textContent = 'Usuário';
-            document.getElementById('userCreatedAt').textContent = 'N/A';
+            // Sessão ausente/expirada: limpar dados locais e forçar novo login
+            localStorage.removeItem('userEmail');
+            userEmail = null;
+            showError('welcome', 'Sessão expirada. Faça login novamente.');
+            switchScreen('loginScreen');
+            if (btn) {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
         } else {
-            // Mostrar informações armazenadas localmente como fallback
-            document.getElementById('userEmail').textContent = emailToUse;
-            document.getElementById('userUsername').textContent = 'N/A';
-            document.getElementById('userName').textContent = 'Usuário';
-            document.getElementById('userCreatedAt').textContent = 'N/A';
+            const errorMsg = await response.text();
+            showError('welcome', errorMsg || 'Erro ao carregar informações. Tente novamente.');
+            if (btn) {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
         }
     } catch (error) {
-        console.error('Erro ao carregar informações do usuário:', error);
-        // Mostrar informações armazenadas localmente como fallback
-        const emailToUse = email || userEmail || localStorage.getItem('userEmail');
-        if (emailToUse) {
-            document.getElementById('userEmail').textContent = emailToUse;
+        console.error('Erro ao carregar informações:', error);
+        showError('welcome', 'Erro ao conectar com o servidor.');
+        if (btn) {
+            btn.textContent = originalText;
+            btn.disabled = false;
         }
     }
 }

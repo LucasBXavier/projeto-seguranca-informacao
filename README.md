@@ -16,6 +16,16 @@ Arquivos principais:
 - `src/main/java/io/github/lucasbxavier/projetoseguranca/service/LoginService.java`
 - `src/main/resources/application.properties`
 
+## Rodar o front-end no VS Code (Live Server)
+
+Para visualizar o front que esta em `projeSegurancaFront/`, uma opcao simples e usar a extensao **Live Server** no VS Code.
+
+1) Instale a extensao `Live Server` (autor: Ritwick Dey).
+2) Abra o arquivo `projeSegurancaFront/index.html`.
+3) Clique em **Go Live** no canto inferior do VS Code.
+
+Normalmente o front abre em `http://127.0.0.1:5500`, que e o endereco liberado no CORS da API.
+
 ## Rodar com Docker (jeito simples)
 
 ### Pre-requisitos
